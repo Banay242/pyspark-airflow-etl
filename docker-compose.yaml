@@ -80,5 +80,81 @@ services:
       - ./data:/opt/data
     command: sleep infinity
 
+  zookeeper:
+    image: zookeeper:3.7
+    container_name: zookeeper
+    hostname: zookeeper
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.10
+
+  clickhouse01:
+    image: clickhouse/clickhouse-server:22.5
+    container_name: clickhouse01
+    hostname: clickhouse01
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.11
+    ports:
+      - "127.0.0.1:8121:8123"
+      - "127.0.0.1:9005:9000"
+    volumes:
+      - ./clickhouse_cluster/clickhouse01:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse02:
+    image: clickhouse/clickhouse-server:22.5
+    container_name: clickhouse02
+    hostname: clickhouse02
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.12
+    ports:
+      - "127.0.0.1:8124:8123"
+      - "127.0.0.1:9001:9000"
+    volumes:
+      - ./clickhouse_cluster/clickhouse02:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse03:
+    image: clickhouse/clickhouse-server:22.5
+    container_name: clickhouse03
+    hostname: clickhouse03
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.13
+    ports:
+      - "127.0.0.1:8125:8123"
+      - "127.0.0.1:9002:9000"
+    volumes:
+      - ./clickhouse_cluster/clickhouse03:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  clickhouse04:
+    image: clickhouse/clickhouse-server:22.5
+    container_name: clickhouse04
+    hostname: clickhouse04
+    networks:
+      clickhouse-network:
+        ipv4_address: 172.23.0.14
+    ports:
+      - "127.0.0.1:8126:8123"
+      - "127.0.0.1:9003:9000"
+    volumes:
+      - ./clickhouse_cluster/clickhouse04:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+networks:
+  clickhouse-network:
+    name: clickhouse-network
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24
+
+
 volumes:
   postgres-db-volume:

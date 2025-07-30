@@ -5,3 +5,5 @@ logs/
 *.log
 
 data/*.csv
+
+.idea/
